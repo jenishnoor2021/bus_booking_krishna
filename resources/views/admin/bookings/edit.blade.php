@@ -27,6 +27,8 @@
         </p>
         <p><strong>Customer Name:</strong> {{ $booking->customer_name }}</p>
         <p><strong>Phone:</strong> {{ $booking->customer_phone }}</p>
+        <p><strong>Pickup Location:</strong> {{ $booking->pick_location }}</p>
+        <p><strong>Drop Locatoion:</strong> {{ $booking->drop_location }}</p>
         <p><strong>Booked By:</strong> {{ ucfirst($booking->booked_by) }}</p>
 
         <form action="{{ route('admin.bookings.update', $booking->id) }}" method="POST">

@@ -29,6 +29,8 @@
         <p><strong>Customer Name:</strong> {{ $booking->customer_name }}</p>
         <p><strong>Phone:</strong> {{ $booking->customer_phone }}</p>
         <p><strong>Booked By:</strong> {{ ucfirst($booking->booked_by) }}</p>
+        <p><strong>Pickup Location:</strong> {{ $booking->pick_location }}</p>
+        <p><strong>Drop Locatoion:</strong> {{ $booking->drop_location }}</p>
         <p><strong>Status:</strong> {{ ucfirst($booking->status) }}</p>
         <p><strong>razorpay_order_id:</strong> {{ ucfirst($booking->razorpay_order_id) }}</p>
         <p><strong>razorpay_payment_id:</strong> {{ ucfirst($booking->razorpay_payment_id) }}</p>

@@ -15,6 +15,7 @@ use App\Http\Controllers\AdminGalleryController;
 use App\Http\Controllers\AdminSlidersController;
 use App\Http\Controllers\AdminBusRouteController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\AdminLocationsController;
 use App\Http\Controllers\AdminPickupDropController;
 use App\Http\Controllers\AdminTestominalController;
 use App\Http\Controllers\AdminBusScheduleController;
@@ -170,6 +171,8 @@ Route::group(['middleware' => ['auth', 'usersession']], function () {
         ->name('admin.bookings.cancel');
     Route::get('/admin/bookings/{id}/edit', [AdminBookingController::class, 'edit'])->name('admin.bookings.edit');
     Route::post('/admin/bookings/{id}', [AdminBookingController::class, 'update'])->name('admin.bookings.update');
+    Route::get('/admin/bookings/export', [AdminBookingController::class, 'export'])
+        ->name('admin.bookings.export');
 
     // Route::get('admin/bookings/create', [AdminBookingController::class, 'create'])->name('admin.bookings.create');
     // Route::post('admin/bookings/store', [AdminBookingController::class, 'store'])->name('admin.bookings.store');
@@ -184,6 +187,14 @@ Route::group(['middleware' => ['auth', 'usersession']], function () {
     Route::get('admin/contact/destroy/{id}', [AdminContactController::class, 'destroy'])->name('admin.contact.destroy');
     Route::post("admin/contact/active", [AdminContactController::class, 'statusUpdate'])->name('admin.contact.active');
     Route::post('/admin/contact/bulk-delete', [AdminContactController::class, 'bulkDelete'])->name('admin.contact.bulkDelete');
+
+    Route::get("admin/locations", [AdminLocationsController::class, 'index'])->name('admin.locations.index');
+    Route::get('admin/locations/create', [AdminLocationsController::class, 'create'])->name('admin.locations.create');
+    Route::post('admin/locations/store', [AdminLocationsController::class, 'store'])->name('admin.locations.store');
+    Route::get('admin/locations/edit/{id}', [AdminLocationsController::class, 'edit'])->name('admin.locations.edit');
+    Route::patch('admin/locations/update/{id}', [AdminLocationsController::class, 'update'])->name('admin.locations.update');
+    Route::get('admin/locations/destroy/{id}', [AdminLocationsController::class, 'destroy'])->name('admin.locations.destroy');
+    Route::post("admin/locations/active", [AdminLocationsController::class, 'statusUpdate'])->name('admin.locations.active');
 });
 
 //Clear Cache facade value:

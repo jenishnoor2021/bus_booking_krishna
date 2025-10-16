@@ -646,7 +646,7 @@
                                 <!-- Selected Seats Info -->
                                 <div class="selected-seats-info" id="selectedInfo" style="display: none;">
                                     <div class="row align-items-center">
-                                        <div class="col-md-8">
+                                        <div class="col-md-4">
                                             <strong>Selected Seats:</strong> <span id="selectedSeatsText">None</span><br>
                                             <strong>Total Amount:</strong> ₹<span id="totalAmount">0</span>
                                         </div>
@@ -742,6 +742,25 @@
                     <div class="form-section">
                         <p style="margin-bottom: 15px; color: #666;">Please enter your residential location address</p>
                         <div class="grid-3">
+                            <div>
+                                <label for="pick_location">Pickup location</label>
+                                <select name="pick_location" id="pick_location" class="form-select nice-select" required>
+                                    <option value="">Select locations</option>
+                                    @foreach($locations as $location)
+                                    <option value="{{ $location->location_name }}">{{ $location->location_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label for="drop_location">Drop Location</label>
+                                <select name="drop_location" id="drop_location" class="form-select nice-select" required>
+                                    <option value="">Select locations</option>
+                                    @foreach($locations as $location)
+                                    <option value="{{ $location->location_name }}">{{ $location->location_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <br />
                             <div>
                                 <label>Pin Code *</label>
                                 <input type="text" name="pin_code" pattern="[0-9]{6}" required>
@@ -1139,6 +1158,12 @@
         const fromText = fromSelect.options[fromSelect.selectedIndex].text;
         const toText = toSelect.options[toSelect.selectedIndex].text;
 
+        const pickSelect = document.getElementById('pick_location');
+        const dropSelect = document.getElementById('drop_location');
+
+        const pickLocation = pickSelect.options[pickSelect.selectedIndex].text;
+        const dropLocation = dropSelect.options[dropSelect.selectedIndex].text;
+
         // Populate service details
         document.getElementById('drawerFrom').textContent = currentSchedule.route.from_place || fromText;
         document.getElementById('drawerTo').textContent = currentSchedule.route.to_place || toText;
@@ -1146,12 +1171,15 @@
         document.getElementById('drawerService').textContent = currentSchedule.route.route_name || '-';
         document.getElementById('drawerSeats').textContent = selectedSeats.join(', ');
         document.getElementById('drawerBusType').textContent = `${currentSchedule.bus.bus_type} (${currentSchedule.bus.total_seats} seats)`;
-        document.getElementById('drawerBoarding').textContent = `${currentSchedule.route.departure_time} - ${fromText}`;
-        document.getElementById('drawerDropoff').textContent = `${currentSchedule.route.arrival_time} - ${toText}`;
+        // document.getElementById('drawerBoarding').textContent = `${currentSchedule.route.departure_time} - ${fromText}`;
+        // document.getElementById('drawerDropoff').textContent = `${currentSchedule.route.arrival_time} - ${toText}`;
+        document.getElementById('drawerBoarding').textContent = `${pickLocation}`;
+        document.getElementById('drawerDropoff').textContent = `${dropLocation}`;
 
         // Calculate fare details
         const ticketFare = selectedSeats.length * seatPrice;
-        const gst = (ticketFare * 0.05).toFixed(2);
+        // const gst = (ticketFare * 0.05).toFixed(2);
+        const gst = 0;
         const grandTotal = (parseFloat(ticketFare) + parseFloat(gst)).toFixed(2);
 
         document.getElementById('drawerTicketFare').textContent = ticketFare.toFixed(2);
@@ -1180,7 +1208,7 @@
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 }
             })
             .then(response => response.json())
@@ -1193,7 +1221,7 @@
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('An error occurred');
+                alert('An error occurred, check console for details');
             });
     });
 </script>

@@ -51,7 +51,14 @@
             <li>
                 <a href="/admin/pickup_drop" class="waves-effect">
                     <i class="bx bx-home-circle"></i>
-                    <span key="t-chat">Pickup/Drop Points</span>
+                    <span key="t-chat">Origin/Destination Points</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="/admin/locations" class="waves-effect">
+                    <i class="bx bx-home-circle"></i>
+                    <span key="t-chat">Pickup/Drop Locations</span>
                 </a>
             </li>
 

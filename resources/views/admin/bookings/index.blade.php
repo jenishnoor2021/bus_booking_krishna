@@ -64,6 +64,14 @@
                   </div>
                 </form>
 
+                @if(request()->has('travel_date') || request()->has('bus_id'))
+                <div class="mb-3">
+                  <a href="{{ route('admin.bookings.export', request()->all()) }}" class="btn btn-success">
+                    <i class="bi bi-file-earmark-excel"></i> Export Bookings
+                  </a>
+                </div>
+                @endif
+
               </div>
             </span>
 

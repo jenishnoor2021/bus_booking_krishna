@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Bus;
 use App\Models\Booking;
 use Illuminate\Http\Request;
+use App\Exports\BookingExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
+
 
 class AdminBookingController extends Controller
 {
@@ -86,5 +90,35 @@ class AdminBookingController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Booking updated successfully.');
+    }
+
+    public function export(Request $request)
+    {
+        $busId = $request->bus_id;
+        $travelDate = $request->travel_date;
+
+        // Base filename
+        $fileName = 'booking-data';
+
+        // Append date if available
+        if ($travelDate) {
+            $fileName .= '-' . Carbon::parse($travelDate)->format('Ymd');
+        }
+
+        // Append bus number if available
+        if ($busId) {
+            $bus = Bus::find($busId);
+            if ($bus) {
+                $safeBusNo = preg_replace('/[^A-Za-z0-9_-]/', '', $bus->bus_no);
+                $fileName .= '-' . $safeBusNo;
+            }
+        }
+
+        $fileName .= '.xlsx';
+
+        return Excel::download(
+            new BookingExport($busId, $travelDate),
+            $fileName
+        );
     }
 }

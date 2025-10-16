@@ -106,7 +106,7 @@
         <div class="shape-mockup movixgX d-none d-xxl-block" data-bottom="18%" data-right="-12%"><img src="{{asset('front_assets/img/shape/shape_2_4.png')}}" alt="shape"></div>
     </div>
 </div>
-<section class="position-relative overflow-hidden space-bottom" id="destination-sec">
+<!-- <section class="position-relative overflow-hidden space-bottom" id="destination-sec">
     <div class="container">
         <div class="title-area text-center"><span class="sub-title">Services We Offer</span>
             <h2 class="sec-title">Our Amazing services</h2>
@@ -186,13 +186,13 @@
             </div>
         </div>
     </div>
-</section>
-<div class="elements-sec bg-white overflow-hidden">
+</section> -->
+<!-- <div class="elements-sec bg-white overflow-hidden">
     <div class="container-fluid">
         <div class="tags-container relative"></div>
     </div>
-</div>
-<section class="team-area3 position-relative bg-top-center space" data-bg-src="{{asset('front_assets/img/bg/team_bg_2.jpg')}}">
+</div> -->
+<!-- <section class="team-area3 position-relative bg-top-center space" data-bg-src="{{asset('front_assets/img/bg/team_bg_2.jpg')}}">
     <div class="container z-index-common">
         <div class="title-area text-center"><span class="sub-title">Meet with Guide</span>
             <h2 class="sec-title">Meet with Tour Guide</h2>
@@ -319,7 +319,7 @@
             <button data-slider-next="#teamSlider3" class="slider-arrow slider-next"><img src="{{asset('front_assets/img/icon/left-arrow2.svg')}}" alt=""></button>
         </div>
     </div>
-</section>
+</section> -->
 <section class="testi-area overflow-hidden space-bottom" id="testi-sec">
     <div class="container-fluid p-0">
         <div class="title-area mb-20 text-center"><span class="sub-title">Testimonial</span>
@@ -354,7 +354,7 @@
     <div class="shape-mockup d-none d-xl-block" data-bottom="-2%" data-right="0%"><img src="{{asset('front_assets/img/shape/line2.png')}}" alt="shape"></div>
     <div class="shape-mockup movingX d-none d-xl-block" data-top="30%" data-left="5%"><img src="{{asset('front_assets/img/shape/shape_7.png')}}" alt="shape"></div>
 </section>
-<div class="brand-area overflow-hidden">
+<!-- <div class="brand-area overflow-hidden">
     <div class="container th-container">
         <div class="swiper th-slider brandSlider1" id="brandSlider1" data-slider-options='{"breakpoints":{"0":{"slidesPerView":1},"576":{"slidesPerView":"2"},"768":{"slidesPerView":"3"},"992":{"slidesPerView":"3"},"1200":{"slidesPerView":"6"},"1400":{"slidesPerView":"8"}}}'>
             <div class="swiper-wrapper">
@@ -421,7 +421,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 <div class="sidebar-gallery-area space">
     <div class="container-fluid">
         <div class="slider-area">

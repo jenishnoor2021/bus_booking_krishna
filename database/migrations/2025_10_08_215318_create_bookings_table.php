@@ -25,6 +25,8 @@ class CreateBookingsTable extends Migration
             $table->string('pin_code')->nullable();
             $table->string('state')->nullable();
             $table->string('city')->nullable();
+            $table->string('pick_location')->nullable();
+            $table->string('drop_location')->nullable();
             $table->json('seat_numbers'); // ["L1A", "L1B"]
             $table->decimal('total_amount', 10, 2)->default(0);
             $table->enum('status', ['pending', 'confirmed', 'cancelled'])->default('confirmed');

@@ -6,22 +6,25 @@ use Exception;
 use Carbon\Carbon;
 use Razorpay\Api\Api;
 use App\Models\Booking;
+use App\Models\Locations;
 use App\Models\PickupDrop;
 use App\Models\BusSchedule;
 use App\Models\JournyPlaces;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class FrontSideController extends Controller
 {
     public function search(Request $request)
     {
         $pickupDrops = PickupDrop::where('is_active', 1)->get();
+        $locations = Locations::where('is_active', 1)->get();
 
         $fromId = $request->from_id ?? null;
         $toId = $request->to_id ?? null;
         $date = $request->travel_date ?? null;
 
-        return view('front.search', compact('pickupDrops', 'fromId', 'toId', 'date'));
+        return view('front.search', compact('pickupDrops', 'fromId', 'toId', 'date', 'locations'));
     }
 
     // public function results(Request $request)
@@ -122,19 +125,31 @@ class FrontSideController extends Controller
     {
         $schedule = BusSchedule::with('route')->findOrFail($id);
 
-        $data = $request->validate([
+        $validator = Validator::make($request->all(), [
             'customer_name' => 'required|string|max:255',
             'customer_phone' => 'required|string|max:15',
             'customer_email' => 'nullable|email',
             'seat_numbers' => 'required',
             'total_amount' => 'required|numeric|min:1',
             'alternate_phone' => 'required|string|max:15',
+            'pick_location' => 'required|string',
+            'drop_location' => 'required|string',
             'pin_code' => 'required',
             'state' => 'required',
             'city' => 'required',
             'address' => 'required',
             'age' => 'required',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $data = $validator->validated();
 
         $seatNumbers = json_decode($data['seat_numbers'], true);
 
@@ -157,31 +172,43 @@ class FrontSideController extends Controller
             }
         }
 
-        $booking = Booking::create([
-            'bus_schedule_id' => $id,
-            'customer_name' => $data['customer_name'],
-            'customer_phone' => $data['customer_phone'],
-            'customer_email' => $request->customer_email,
-            'seat_numbers' => $seatNumbers,
-            'total_amount' => $data['total_amount'],
-            'alternate_phone' => $data['alternate_phone'],
-            'pin_code' => $data['pin_code'],
-            'state' => $data['state'],
-            'city' => $data['city'],
-            'address' => $data['address'],
-            'age' => $data['age'],
-            'status' => 'pending',
-        ]);
+        try {
+            $booking = Booking::create([
+                'bus_schedule_id' => $id,
+                'customer_name' => $data['customer_name'],
+                'customer_phone' => $data['customer_phone'],
+                'customer_email' => $data['customer_email'] ?? null,
+                'seat_numbers' => $seatNumbers,
+                'total_amount' => $data['total_amount'],
+                'alternate_phone' => $data['alternate_phone'] ?? null,
+                'pick_location' => $data['pick_location'],
+                'drop_location' => $data['drop_location'],
+                'pin_code' => $data['pin_code'],
+                'state' => $data['state'],
+                'city' => $data['city'],
+                'address' => $data['address'],
+                'age' => $data['age'],
+                'status' => 'pending',
+            ]);
 
-        // Reduce available seats
-        $schedule->available_seats -= count($seatNumbers);
-        $schedule->save();
+            // Reduce available seats
+            $schedule->available_seats -= count($seatNumbers);
+            $schedule->save();
 
-        return response()->json([
-            'success' => true,
-            'booking_id' => $booking->id,
-            'message' => 'Booking created successfully!'
-        ]);
+            return response()->json([
+                'success' => true,
+                'booking_id' => $booking->id,
+                'message' => 'Booking created successfully!'
+            ]);
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            \Log::error('Booking creation failed: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create booking. Please try again.'
+            ], 500);
+        }
     }
 
     public function payment($bookingId)
