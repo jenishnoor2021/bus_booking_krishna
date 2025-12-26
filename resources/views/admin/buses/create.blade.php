@@ -42,7 +42,7 @@
                 @csrf
 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="mb-3">
                             <label for="file">Bus Image<span class="text-danger">*</span></label>
                             <input type="file" name="file" class="form-control" accept="image/*" id="file" required>
@@ -51,7 +51,7 @@
                             @endif
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="mb-3">
                             <label for="bus_no">Bus Number<span class="text-danger">*</span></label>
                             <input type="text" name="bus_no" class="form-control" id="bus_no"
@@ -61,18 +61,25 @@
                             @endif
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="mb-3">
                             <label for="bus_type">Bus Type<span class="text-danger">*</span></label>
-                            <!-- <select name="bus_type" id="bus_type" class="form-control" required>
-                                <option value="">-- Select Bus Type --</option>
-                                <option value="AC" {{ old('bus_type') == 'AC' ? 'selected' : '' }}>AC</option>
-                                <option value="NonAC" {{ old('bus_type') == 'NonAC' ? 'selected' : '' }}>Non-AC</option>
-                            </select> -->
                             <input type="text" name="bus_type" class="form-control" id="bus_type"
                                 placeholder="Enter bus Type" value="{{ old('bus_type') }}" required>
                             @if($errors->has('bus_type'))
                             <div class="error text-danger">{{ $errors->first('bus_type') }}</div>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="type">Type<span class="text-danger">*</span></label>
+                            <select name="type" id="type" class="form-control" required>
+                                <option value="sleeper" {{ old('type') == 'sleeper' ? 'selected' : '' }}>Sleeper</option>
+                                <option value="seater" {{ old('type') == 'seater' ? 'selected' : '' }}>Seater</option>
+                            </select>
+                            @if($errors->has('type'))
+                            <div class="error text-danger">{{ $errors->first('type') }}</div>
                             @endif
                         </div>
                     </div>

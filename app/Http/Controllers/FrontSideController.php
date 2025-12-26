@@ -18,13 +18,22 @@ class FrontSideController extends Controller
     public function search(Request $request)
     {
         $pickupDrops = PickupDrop::where('is_active', 1)->get();
-        $locations = Locations::where('is_active', 1)->get();
+
+        $fromLocations = Locations::where('is_active', 1)->get();
+        $toLocations = Locations::where('is_active', 1)->get();
+
+        if ($request->from_id != '') {
+            $fromLocations = Locations::where('pickupdrop_id', $request->from_id)->where('is_active', 1)->get();
+        }
+        if ($request->to_id != '') {
+            $toLocations = Locations::where('pickupdrop_id', $request->to_id)->where('is_active', 1)->get();
+        }
 
         $fromId = $request->from_id ?? null;
         $toId = $request->to_id ?? null;
         $date = $request->travel_date ?? null;
 
-        return view('front.search', compact('pickupDrops', 'fromId', 'toId', 'date', 'locations'));
+        return view('front.search', compact('pickupDrops', 'fromId', 'toId', 'date', 'fromLocations', 'toLocations'));
     }
 
     // public function results(Request $request)
@@ -57,8 +66,8 @@ class FrontSideController extends Controller
     public function results(Request $request)
     {
         $request->validate([
-            'from_id' => 'required',
-            'to_id' => 'required',
+            'from_id' => 'required|different:to_id',
+            'to_id'   => 'required|different:from_id',
             'travel_date' => 'required|date',
         ]);
 

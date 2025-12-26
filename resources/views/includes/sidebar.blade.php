@@ -34,12 +34,12 @@
                 </a>
             </li>
 
-            <!-- <li>
+            <li>
                 <a href="/admin/users" class="waves-effect">
                     <i class="bx bx-home-circle"></i>
                     <span key="t-chat">Users</span>
                 </a>
-            </li> -->
+            </li>
 
             <li>
                 <a href="/admin/bus" class="waves-effect">

@@ -37,6 +37,23 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
+                            <label for="pickupdrop_id">City<span class="text-danger">*</span></label>
+                            <select name="pickupdrop_id" id="pickupdrop_id" class="form-control" required>
+                                <option value="">Select City</option>
+                                @foreach ($pickupDrops as $pickup)
+                                <option value="{{$pickup->id}}" {{ $pickup->id == $location->pickupdrop_id ? 'selected' : '' }}>{{$pickup->place_name}}</option>
+                                @endforeach
+                            </select>
+                            @if ($errors->has('pickupdrop_id'))
+                            <div class="error text-danger">{{ $errors->first('pickupdrop_id') }}</div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
                             <label for="location_name">Location Name<span class="text-danger">*</span></label>
                             <input type="text" name="location_name" class="form-control" id="location_name"
                                 placeholder="Enter Location Name" value="{{ $location->location_name }}" required>
@@ -52,7 +69,7 @@
                     <div class="d-flex gap-2">
                         <input type="submit" class="btn btn-primary w-md" id="submitBtn" value="Submit" />
                         <span id="loadingText" style="display:none; margin-left:10px;"><i class="fa fa-spinner fa-spin" style="font-size:24px"></i></span>
-                        <a class="btn btn-light mt-3 mt-lg-0" href="{{ URL::to('/admin/pickup_drop') }}">Back</a>
+                        <a class="btn btn-light mt-3 mt-lg-0" href="{{ URL::to('/admin/locations') }}">Back</a>
                     </div>
                 </div>
                 </form>
@@ -71,6 +88,9 @@
     $(function() {
         $("form[name='editlocationForm']").validate({
             rules: {
+                pickupdrop_id: {
+                    required: true,
+                },
                 location_name: {
                     required: true,
                 },

@@ -958,14 +958,41 @@ $('.service-close-btn').on('click', function() {
     $('.view_seats').removeClass('active');
 });
 
-document.querySelector('.open-booking-btn').addEventListener('click', function() {
-  document.querySelector('.booking-drawer').classList.add('active');
-});
+// document.querySelector('.open-booking-btn').addEventListener('click', function() {
+//   document.querySelector('.booking-drawer').classList.add('active');
+// });
 
-document.querySelector('.booking-drawer .close-btn').addEventListener('click', function() {
-  document.querySelector('.booking-drawer').classList.remove('active');
-});
+// document.querySelector('.booking-drawer .close-btn').addEventListener('click', function() {
+//   document.querySelector('.booking-drawer').classList.remove('active');
+// });
 
-document.querySelector('.booking-drawer .drawer-overlay').addEventListener('click', function() {
-  document.querySelector('.booking-drawer').classList.remove('active');
+// document.querySelector('.booking-drawer .drawer-overlay').addEventListener('click', function() {
+//   document.querySelector('.booking-drawer').classList.remove('active');
+// });
+
+document.addEventListener('DOMContentLoaded', function () {
+
+  const openBtn = document.querySelector('.open-booking-btn');
+  const drawer = document.querySelector('.booking-drawer');
+  const closeBtn = document.querySelector('.booking-drawer .close-btn');
+  const overlay = document.querySelector('.booking-drawer .drawer-overlay');
+
+  if (openBtn && drawer) {
+    openBtn.addEventListener('click', function () {
+      drawer.classList.add('active');
+    });
+  }
+
+  if (closeBtn && drawer) {
+    closeBtn.addEventListener('click', function () {
+      drawer.classList.remove('active');
+    });
+  }
+
+  if (overlay && drawer) {
+    overlay.addEventListener('click', function () {
+      drawer.classList.remove('active');
+    });
+  }
+
 });

@@ -2,6 +2,11 @@
 
 @section('page_style')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<style>
+    .form-control[readonly] {
+        background-color: #fff;
+    }
+</style>
 @endsection
 
 @section('content')
@@ -111,7 +116,7 @@
                         <div class="icon"><i class="fa-regular fa-calendar-days"></i></div>
                         <div class="search-input">
                             <label for="travel_date">Date</label>
-                            <input type="date" name="travel_date" id="travel_date" required>
+                            <input type="date" name="travel_date" id="travel_date" placeholder="Y-m-d" required>
                         </div>
                     </div>
                     <div class="form-btn col-md-12 col-lg-auto">
@@ -372,4 +377,46 @@
         minDate: "today"
     });
 </script>
+<script>
+    $(document).ready(function() {
+
+        const fromSelect = $('#from_id');
+        const toSelect = $('#to_id');
+
+        // Store original options ONCE
+        const originalOptions = fromSelect.find('option').clone();
+
+        function rebuildSelect(source, target) {
+            const selectedVal = source.val();
+            const targetOldValue = target.val();
+
+            // Restore original options
+            target.empty().append(originalOptions.clone());
+
+            // Remove selected value from opposite dropdown
+            if (selectedVal) {
+                target.find(`option[value="${selectedVal}"]`).remove();
+            }
+
+            // Restore previous selection if valid
+            if (targetOldValue && target.find(`option[value="${targetOldValue}"]`).length) {
+                target.val(targetOldValue);
+            } else {
+                target.val('');
+            }
+
+            // ONLY update (never destroy)
+            target.niceSelect('update');
+        }
+
+        fromSelect.on('change', function() {
+            rebuildSelect(fromSelect, toSelect);
+        });
+
+        toSelect.on('change', function() {
+            // rebuildSelect(toSelect, fromSelect);
+        });
+    });
+</script>
+
 @endsection

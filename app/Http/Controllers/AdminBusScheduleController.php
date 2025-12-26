@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Bus;
 use App\Models\Booking;
 use App\Models\BusRoute;
+use App\Models\Locations;
 use App\Models\BusSchedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -185,7 +186,10 @@ class AdminBusScheduleController extends Controller
         $layout = json_decode($schedule->bus->seat_layout, true);
         $bookedSeats = Booking::where('bus_schedule_id', $id)->whereIn('status', ['confirmed', 'pending'])->pluck('seat_numbers')->flatten()->toArray();
 
-        return view('admin.bus_schedules.book', compact('schedule', 'layout', 'bookedSeats'));
+        $fromLocations = Locations::where('pickupdrop_id', $schedule->route->from_id)->where('is_active', 1)->get();
+        $toLocations = Locations::where('pickupdrop_id', $schedule->route->to_id)->where('is_active', 1)->get();
+
+        return view('admin.bus_schedules.book', compact('schedule', 'layout', 'bookedSeats', 'fromLocations', 'toLocations'));
     }
 
     public function storeBooking(Request $request, $id)

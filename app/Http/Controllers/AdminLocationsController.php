@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Validator;
 use App\Models\Locations;
+use App\Models\PickupDrop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
@@ -17,7 +18,8 @@ class AdminLocationsController extends Controller
     public function index()
     {
         $locations = Locations::orderBy('id', 'DESC')->get();
-        return view('admin.locations.index', compact('locations'));
+        $pickupDrops = PickupDrop::where('is_active', 1)->orderBy('id', 'DESC')->get();
+        return view('admin.locations.index', compact('locations', 'pickupDrops'));
     }
 
     /**
@@ -72,7 +74,8 @@ class AdminLocationsController extends Controller
     public function edit($id)
     {
         $location = Locations::findOrFail($id);
-        return view('admin.locations.edit', compact('location'));
+        $pickupDrops = PickupDrop::orderBy('id', 'DESC')->get();
+        return view('admin.locations.edit', compact('location', 'pickupDrops'));
     }
 
     /**

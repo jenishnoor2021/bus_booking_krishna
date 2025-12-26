@@ -91,6 +91,7 @@
               <th>Status</th>
               <th>Payment Status</th>
               <th>Actions</th>
+              <th>Ticket</th>
             </tr>
           </thead>
 
@@ -145,6 +146,11 @@
                   <i class="fa fa-ban"></i> Cancel
                 </a>
                 @endif
+              </td>
+              <td>
+                <a href="{{ route('admin.bookings.ticket', $booking->id) }}" class="btn btn-sm btn-outline-secondary" title="Download ticket">
+                  Download
+                </a>
               </td>
             </tr>
             @endforeach

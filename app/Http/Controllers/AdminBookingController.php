@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use PDF;
+use Carbon\Carbon;
 use App\Models\Bus;
 use App\Models\Booking;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use App\Exports\BookingExport;
 use Maatwebsite\Excel\Facades\Excel;
-use Carbon\Carbon;
 
 
 class AdminBookingController extends Controller
@@ -120,5 +122,19 @@ class AdminBookingController extends Controller
             new BookingExport($busId, $travelDate),
             $fileName
         );
+    }
+
+    public function ticketDownload(Request $request, $id)
+    {
+        $booking = Booking::findOrFail($id);
+
+        if (!$booking) {
+            return redirect()->back()->with('error', 'Invalid booking id');
+        }
+
+        $company = Company::first();
+
+        $pdf = PDF::loadView('front.ticket', compact('booking', 'company'));
+        return $pdf->download('ticket-' . $booking->id . '.pdf');
     }
 }

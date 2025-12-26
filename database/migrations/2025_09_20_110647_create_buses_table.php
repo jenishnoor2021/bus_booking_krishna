@@ -18,6 +18,7 @@ class CreateBusesTable extends Migration
             $table->string('file');
             $table->string('bus_no');
             $table->string('bus_type');
+            $table->string('type')->default('sleeper');
             $table->json('seat_layout')->nullable();
             $table->boolean('is_active')->default(1);
             $table->timestamps();

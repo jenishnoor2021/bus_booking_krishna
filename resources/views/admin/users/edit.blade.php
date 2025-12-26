@@ -84,13 +84,17 @@
                     </div>
                 </div>
 
-                <!-- <div class="mb-3">
-                    <label for="address" class="form-label">Address</label>
-                    <textarea type="text" name="address" class="form-control" id="address" placeholder="Enter Address">{{ $user->address }}</textarea>
-                    @if ($errors->has('address'))
-                    <div class="error text-danger">{{ $errors->first('address') }}</div>
-                    @endif
-                </div> -->
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <textarea type="text" name="address" class="form-control" id="address" placeholder="Enter Address">{{ $user->address }}</textarea>
+                            @if ($errors->has('address'))
+                            <div class="error text-danger">{{ $errors->first('address') }}</div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
 
                 <div class="row">
                     <div class="col-lg-4">

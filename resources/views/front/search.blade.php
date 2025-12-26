@@ -507,6 +507,30 @@
     .text-right {
         text-align: right;
     }
+
+    .bus-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        /* two equal columns */
+        gap: 20px;
+        align-items: start;
+    }
+
+    .bus-deck {
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 6px;
+    }
+
+    @media (max-width: 768px) {
+        .bus-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .form-control[readonly] {
+        background-color: #fff;
+    }
 </style>
 @endsection
 
@@ -558,7 +582,7 @@
                         <div class="icon"><i class="fa-regular fa-calendar-days"></i></div>
                         <div class="search-input">
                             <label for="travel_date">Date</label>
-                            <input type="date" name="travel_date" id="travel_date" value="{{ $date ?? '' }}" placehoilder="select date" required>
+                            <input type="date" name="travel_date" id="travel_date" value="{{ $date ?? '' }}" placeholder="Y-m-d" required>
                         </div>
                     </div>
                     <div class="form-btn col-md-12 col-lg-auto">
@@ -746,7 +770,7 @@
                                 <label for="pick_location">Pickup location</label>
                                 <select name="pick_location" id="pick_location" class="form-select nice-select" required>
                                     <option value="">Select locations</option>
-                                    @foreach($locations as $location)
+                                    @foreach($fromLocations as $location)
                                     <option value="{{ $location->location_name }}">{{ $location->location_name }}</option>
                                     @endforeach
                                 </select>
@@ -755,7 +779,7 @@
                                 <label for="drop_location">Drop Location</label>
                                 <select name="drop_location" id="drop_location" class="form-select nice-select" required>
                                     <option value="">Select locations</option>
-                                    @foreach($locations as $location)
+                                    @foreach($toLocations as $location)
                                     <option value="{{ $location->location_name }}">{{ $location->location_name }}</option>
                                     @endforeach
                                 </select>
@@ -1028,7 +1052,7 @@
             .then(response => response.json())
             .then(data => {
                 bookedSeats = data.booked_seats || [];
-                renderBusLayout(schedule.bus.seat_layout);
+                renderBusLayout(schedule.bus.seat_layout, schedule.bus.type);
 
                 document.getElementById('resultsSection').style.display = 'none';
                 document.getElementById('bookingSection').style.display = 'block';
@@ -1036,18 +1060,20 @@
             .catch(error => {
                 console.error('Error:', error);
                 bookedSeats = [];
-                renderBusLayout(schedule.bus.seat_layout);
+                renderBusLayout(schedule.bus.seat_layout, schedule.bus.type);
 
                 document.getElementById('resultsSection').style.display = 'none';
                 document.getElementById('bookingSection').style.display = 'block';
             });
     }
 
-    function renderBusLayout(layoutJson) {
+    function renderBusLayout(layoutJson, type) {
         const layout = JSON.parse(layoutJson);
         const layoutDiv = document.getElementById('busLayout');
 
         let html = '';
+
+        html += '<div class="bus-grid">';
 
         // Lower Deck
         if (layout.lower && layout.lower.rows) {
@@ -1061,7 +1087,7 @@
                     if (seat) {
                         const isBooked = bookedSeats.includes(seat);
                         const statusClass = isBooked ? 'booked' : 'available';
-                        html += `<div class="seat ${statusClass}" data-seat="${seat}" onclick="toggleSeat('${seat}')">${seat}</div>`;
+                        html += `<div class="seat ${statusClass}" data-seat="${seat}" onclick="toggleSeat('${seat}')" style="${type == 'sleeper' ? 'height:100px;' : ''}">${seat}</div>`;
                     } else {
                         html += '<div class="seat-spacer"></div>';
                     }
@@ -1084,7 +1110,7 @@
                     if (seat) {
                         const isBooked = bookedSeats.includes(seat);
                         const statusClass = isBooked ? 'booked' : 'available';
-                        html += `<div class="seat ${statusClass}" data-seat="${seat}" onclick="toggleSeat('${seat}')">${seat}</div>`;
+                        html += `<div class="seat ${statusClass}" data-seat="${seat}" onclick="toggleSeat('${seat}')" style="${type == 'sleeper' ? 'height:100px;' : ''}">${seat}</div>`;
                     } else {
                         html += '<div class="seat-spacer"></div>';
                     }
@@ -1094,6 +1120,8 @@
 
             html += '</div></div>';
         }
+
+        html += '</div>';
 
         layoutDiv.innerHTML = html;
     }
@@ -1223,6 +1251,47 @@
                 console.error('Error:', error);
                 alert('An error occurred, check console for details');
             });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+
+        const fromSelect = $('#from_id');
+        const toSelect = $('#to_id');
+
+        // Store original options ONCE
+        const originalOptions = fromSelect.find('option').clone();
+
+        function rebuildSelect(source, target) {
+            const selectedVal = source.val();
+            const targetOldValue = target.val();
+
+            // Restore original options
+            target.empty().append(originalOptions.clone());
+
+            // Remove selected value from opposite dropdown
+            if (selectedVal) {
+                target.find(`option[value="${selectedVal}"]`).remove();
+            }
+
+            // Restore previous selection if valid
+            if (targetOldValue && target.find(`option[value="${targetOldValue}"]`).length) {
+                target.val(targetOldValue);
+            } else {
+                target.val('');
+            }
+
+            // ONLY update (never destroy)
+            target.niceSelect('update');
+        }
+
+        fromSelect.on('change', function() {
+            rebuildSelect(fromSelect, toSelect);
+        });
+
+        toSelect.on('change', function() {
+            // rebuildSelect(toSelect, fromSelect);
+        });
     });
 </script>
 @endsection

@@ -53,6 +53,7 @@
                             <th>Action</th>
                             <th>Image</th>
                             <th>Bus Number</th>
+                            <th>Type</th>
                             <th>Bus Type</th>
                             <th>Active/Deactive</th>
                         </tr>
@@ -74,6 +75,7 @@
                             </td>
                             <td><img src="{{ $bus->file }}" alt="img" width="50px" hight="50px" loading="lazy"></td>
                             <td>{{ $bus->bus_no }}</td>
+                            <td>{{ $bus->type }}</td>
                             <td>{{ $bus->bus_type }}</td>
                             <td>
                                 <div class="form-check form-switch">

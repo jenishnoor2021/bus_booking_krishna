@@ -141,6 +141,21 @@
       order: -1;
     }
   }
+
+  .bus-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* 2 columns */
+    gap: 20px;
+    /* space between decks */
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .bus-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 
 <div class="container-fluid">
@@ -150,39 +165,43 @@
     Date: <strong>{{ $schedule->travel_date }}</strong>
   </p>
 
-  {{-- Seat Layout --}}
-  <div class="bus-layout mb-4">
-    <h5>Lower Deck</h5>
-    @foreach($layout['lower']['rows'] as $row)
-    <div class="seat-row">
-      @foreach($row as $seat)
-      @if($seat)
-      <div class="seat sleeper {{ in_array($seat, $bookedSeats) ? 'booked' : '' }}" data-seat="{{ $seat }}">
-        {{ $seat }}
-      </div>
-      @else
-      <div style="width:40px;"></div>
-      @endif
-      @endforeach
-    </div>
-    @endforeach
-  </div>
+  <div class="bus-grid">
 
-  <div class="bus-layout">
-    <h5>Upper Deck</h5>
-    @foreach($layout['upper']['rows'] as $row)
-    <div class="seat-row">
-      @foreach($row as $seat)
-      @if($seat)
-      <div class="seat sleeper {{ in_array($seat, $bookedSeats) ? 'booked' : '' }}" data-seat="{{ $seat }}">
-        {{ $seat }}
+    {{-- Seat Layout --}}
+    <div class="bus-layout mb-4">
+      <h5>Lower Deck</h5>
+      @foreach($layout['lower']['rows'] as $row)
+      <div class="seat-row">
+        @foreach($row as $seat)
+        @if($seat)
+        <div class="seat sleeper {{ in_array($seat, $bookedSeats) ? 'booked' : '' }}" data-seat="{{ $seat }}" style="{{$schedule->bus->type == 'sleeper' ? 'height:100px;' : ''}}">
+          {{ $seat }}
+        </div>
+        @else
+        <div style="width:40px;"></div>
+        @endif
+        @endforeach
       </div>
-      @else
-      <div style="width:40px;"></div>
-      @endif
       @endforeach
     </div>
-    @endforeach
+
+    <div class="bus-layout">
+      <h5>Upper Deck</h5>
+      @foreach($layout['upper']['rows'] as $row)
+      <div class="seat-row">
+        @foreach($row as $seat)
+        @if($seat)
+        <div class="seat sleeper {{ in_array($seat, $bookedSeats) ? 'booked' : '' }}" data-seat="{{ $seat }}" style="{{$schedule->bus->type == 'sleeper' ? 'height:100px;' : ''}}">
+          {{ $seat }}
+        </div>
+        @else
+        <div style="width:40px;"></div>
+        @endif
+        @endforeach
+      </div>
+      @endforeach
+    </div>
+
   </div>
 
   {{-- Booking Form --}}
@@ -254,6 +273,25 @@
         <div class="form-section">
           <p style="margin-bottom: 15px; color: #666;">Please enter your residential address</p>
           <div class="grid-3">
+            <div>
+              <label for="pick_location">Pickup location</label>
+              <select name="pick_location" id="pick_location" class="form-select nice-select" required>
+                <option value="">Select locations</option>
+                @foreach($fromLocations as $location)
+                <option value="{{ $location->location_name }}">{{ $location->location_name }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div>
+              <label for="drop_location">Drop Location</label>
+              <select name="drop_location" id="drop_location" class="form-select nice-select" required>
+                <option value="">Select locations</option>
+                @foreach($toLocations as $location)
+                <option value="{{ $location->location_name }}">{{ $location->location_name }}</option>
+                @endforeach
+              </select>
+            </div>
+            <br />
             <div>
               <label>Pin Code *</label>
               <input type="text" name="pin_code" class="form-control" pattern="[0-9]{6}" placeholder="Enter pincode" required>

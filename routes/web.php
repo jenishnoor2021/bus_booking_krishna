@@ -173,6 +173,8 @@ Route::group(['middleware' => ['auth', 'usersession']], function () {
     Route::post('/admin/bookings/{id}', [AdminBookingController::class, 'update'])->name('admin.bookings.update');
     Route::get('/admin/bookings/export', [AdminBookingController::class, 'export'])
         ->name('admin.bookings.export');
+    Route::get('/admin/bookings/ticket/{id}', [AdminBookingController::class, 'ticketDownload'])
+        ->name('admin.bookings.ticket');
 
     // Route::get('admin/bookings/create', [AdminBookingController::class, 'create'])->name('admin.bookings.create');
     // Route::post('admin/bookings/store', [AdminBookingController::class, 'store'])->name('admin.bookings.store');

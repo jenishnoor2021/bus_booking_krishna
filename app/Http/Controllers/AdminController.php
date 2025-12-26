@@ -202,7 +202,7 @@ class AdminController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'mobile' => 'required',
             'role' => 'required',
-            // 'address' => 'required',
+            'address' => 'required',
             'email' => ['required', 'email', 'max:255', 'unique:users'],
             'password' => 'required',
         ]);
@@ -259,7 +259,7 @@ class AdminController extends Controller
             'mobile' => 'required',
             'role' => 'required',
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            // 'address' => 'required',
+            'address' => 'required',
             'password' => ['nullable', 'string', 'min:8'],
         ]);
 

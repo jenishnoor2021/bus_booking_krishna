@@ -39,6 +39,21 @@
 
                 <div class="row">
                     <div class="mb-3">
+                        <label for="pickupdrop_id">City<span class="text-danger">*</span></label>
+                        <select name="pickupdrop_id" id="pickupdrop_id" class="form-control" required>
+                            <option value="">Select City</option>
+                            @foreach ($pickupDrops as $pickup)
+                            <option value="{{$pickup->id}}">{{$pickup->place_name}}</option>
+                            @endforeach
+                        </select>
+                        @if ($errors->has('pickupdrop_id'))
+                        <div class="error text-danger">{{ $errors->first('pickupdrop_id') }}</div>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="mb-3">
                         <label for="location_name">Location Name<span class="text-danger">*</span></label>
                         <input type="text" name="location_name" class="form-control" id="location_name"
                             placeholder="Enter Location Name" value="{{ old('location_name') }}" required>
@@ -77,6 +92,7 @@
                     <thead>
                         <tr>
                             <th>Action</th>
+                            <th>City</th>
                             <th>Location Name</th>
                             <th>Show/Hide</th>
                         </tr>
@@ -94,6 +110,7 @@
                                     class="btn btn-outline-danger waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="top"
                                     title="Delete"><i class="fa fa-trash"></i></a>
                             </td>
+                            <td>{{ $location->pickupdrop->place_name }}</td>
                             <td>{{ $location->location_name }}</td>
                             <td>
                                 <div class="form-check form-switch">
@@ -122,6 +139,9 @@
     $(function() {
         $("form[name='addLocationForm']").validate({
             rules: {
+                pickupdrop_id: {
+                    required: true,
+                },
                 location_name: {
                     required: true,
                 },
