@@ -32,6 +32,7 @@
                             <li><a class="{{ Request::is('about') ? 'active' : '' }}" href="{{URL::to('/about')}}">About Us</a></li>
                             <li><a class="{{ Request::is('gallerys') ? 'active' : '' }}" href="{{URL::to('/gallerys')}}">Gallery</a></li>
                             <li><a class="{{ Request::is('contact') ? 'active' : '' }}" href="{{URL::to('/contact')}}">Contact us</a></li>
+                            <li><a class="{{ Request::is('booking-info') ? 'active' : '' }}" href="{{URL::to('/booking-info')}}">Booking Info</a></li>
                         </ul>
                     </nav>
                     <button type="button" class="th-menu-toggle d-block d-xl-none"><i class="far fa-bars"></i></button>

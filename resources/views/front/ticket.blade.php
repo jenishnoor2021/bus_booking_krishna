@@ -11,156 +11,141 @@ use Carbon\Carbon;
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bus Ticket</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    /* general styling */
-    body {
-      font-family: "Open Sans", sans-serif;
-    }
-
-    .column-left {
-      float: left;
-      width: 50%;
-      padding: 5px;
-      /* border-right: 1px dotted #000; */
-    }
-
-    .column-right p,
-    .column-left p {
-      font-size: 11px;
-      line-height: normal;
-    }
-
-    .column-right h4,
-    .column-left h4 {
-      font-size: 12px;
-      margin-top: -2px;
-    }
-
-    .column-right {
-      float: left;
-      width: 50%;
-      padding: 5px;
-    }
-
-    .container {
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0 auto;
-    }
-
-    .container h1 {
-      font-size: 14px;
-    }
-
-    /* Clear floats after the columns */
-    .row:after {
-      content: "";
-      display: table;
-      clear: both;
-    }
-
-    .justify-content-between {
-      justify-content: space-between;
-    }
-
-    .justify-content-center {
-      justify-content: center;
-    }
-
-    .justify-content-end {
-      justify-content: end;
-    }
-
-    .title {
-      margin-top: 5px;
-    }
-
-    .align-center {
-      align-self: center;
-    }
-
-    .align-items-center {
-      align-items: center;
-    }
-
-    /*table*/
-    table {
-      margin-top: 10px;
-      /* border: 1px solid #ccc; */
-      border-bottom: 1px solid #000;
-      border-collapse: collapse;
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      table-layout: fixed;
-      font-size: 11px;
-    }
-
-    table tr {
+    .ticket {
+      width: 400px;
+      padding: 20px;
+      border: 2px solid #333;
+      border-radius: 10px;
       background-color: #fff;
-      /* border: 1px solid #000; */
-      padding: .45em;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
-    thead {
-      border-bottom: 1px solid #000;
-      border-top: 1px solid #000;
-    }
-
-    .data-table td {
-      /* padding: 10px; */
-      font-size: 10px;
+    .header {
       text-align: center;
+      border-bottom: 2px dashed #ccc;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
     }
 
-    /*table end*/
-    hr {
-      border-top: 1px solid #000;
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+      color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+    }
+
+    table th,
+    table td {
+      padding: 8px 0;
+      text-align: left;
+    }
+
+    table th {
+      font-weight: bold;
+      color: #555;
+    }
+
+    .footer {
+      text-align: center;
+      border-top: 2px dashed #ccc;
+      padding-top: 10px;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #777;
+    }
+
+    /* Print specific styles */
+    @media print {
+      body {
+        background-color: #fff;
+      }
+
+      .ticket {
+        border: none;
+        box-shadow: none;
+        width: auto;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <br />
-    <center>
-      <h1 class="align-center title">Invoice</h1>
-      <h1 style="margin-top:-5px">{{$company->name}}</h1>
-      <p style="font-size:10px;margin-top:-5px">{{$company->address}}</p>
-    </center>
-    <hr />
 
-    <div class="row">
-      <div class="column-left">
-        <p><strong class="align-center title">Bill Date:</strong>{{ \Carbon\Carbon::parse(Carbon::now())->format('d-m-Y H:i:s') }}</p>
-        <p><strong class="align-center title">Name:</strong></p>
-        <p><strong class="align-center title">Phones :</strong></p>
-        <p><strong class="align-center title">Address :</strong></p>
-        <p><strong class="align-center title">Aadhar No. :</strong></p>
-      </div>
-      <div class="column-right">
-      </div>
-      <div style="clear: both;"></div>
+  <div class="ticket">
+    <div class="header">
+      <h1>{{$company->name}}</h1>
+      <p class="office-address">{{$company->address}}</p>
+      <p>Tel: {{$company->contact}}</p>
+      <p>Mobile No: +91 {{$company->contact}}</p>
     </div>
-    <br />
-    <table class="data-table table-flush table-borderless" cellspacing="1">
-      <thead>
-        <tr>
-          <th>Sr.</th>
-          <th>Name</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>{{$booking->id}}</td>
-          <td>{{$booking->customer_name}}</td>
-        </tr>
-      </tbody>
+    <table>
+      <tr>
+        <th>Invoice no:</th>
+        <td>{{$booking->id}}</td>
+      </tr>
+      <tr>
+        <th>Invoice Date:</th>
+        <td>{{ \Carbon\Carbon::parse(Carbon::now())->format('d-m-Y H:i:s') }}</td>
+      </tr>
+      <tr>
+        <th>Passenger Name:</th>
+        <td>{{ $booking->customer_name ?? 'N/A' }}</td>
+      </tr>
+      <tr>
+        <th>Mobile No:</th>
+        <td>{{ $booking->customer_phone ?? '-' }}</td>
+      </tr>
+      <tr>
+        <th>Bus No:</th>
+        <td>{{ $booking->schedule->bus->bus_no ?? '-' }}</td>
+      </tr>
+      <tr>
+        <th>Seat No:</th>
+        <td>
+          <span>
+            @foreach($booking->seat_numbers as $seat)
+            {{ $seat }}@if(!$loop->last), @endif
+            @endforeach
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <th>From:</th>
+        <td>{{ $booking->schedule->route->from->place_name ?? '-' }}</td>
+      </tr>
+      <tr>
+        <th>To:</th>
+        <td>{{ $booking->schedule->route->to->place_name ?? '-' }}</td>
+      </tr>
+      <tr>
+        <th>Pickup:</th>
+        <td>{{ $booking->pick_location ?? '-' }}</td>
+      </tr>
+      <tr>
+        <th>Drop:</th>
+        <td>{{ $booking->drop_location ?? '-' }}</td>
+      </tr>
+      <tr>
+        <th>Journy Date:</th>
+        <td>{{ \Carbon\Carbon::parse($booking->schedule->travel_date)->format('d-m-Y') }}</td>
+      </tr>
+      <tr>
+        <th>Departure Time:</th>
+        <td>{{ \Carbon\Carbon::parse($booking->schedule->travel_time)->format('h:i A') }}</td>
+      </tr>
+      <tr>
+        <th>Arrival Time:</th>
+        <td>-</td>
+      </tr>
     </table>
+    <div class="footer">
+      <p>Please present this ticket at boarding</p>
+    </div>
   </div>
 </body>
 

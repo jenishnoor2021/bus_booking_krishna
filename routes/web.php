@@ -45,6 +45,8 @@ Route::get('/about', [AdminController::class, 'about'])->name('site.about');
 Route::get('/gallerys', [AdminController::class, 'gallery'])->name('site.gallerys');
 Route::get('/contact', [AdminController::class, 'contact'])->name('site.contact');
 Route::post('/contactstore', [AdminController::class, 'storeContact'])->name('storeContact')->middleware('throttle:5,1');
+Route::get('/booking-info', [AdminController::class, 'bookingInfo'])->name('site.bookingInfo');
+Route::post('/bookingInfoFind', [AdminController::class, 'bookingInfoFind'])->name('bookingInfoFind')->middleware('throttle:5,1');
 
 // Route::get('/manage-booking', [AdminController::class, 'manageBooking'])->name('site.manage-booking');
 Route::get('/search', [FrontSideController::class, 'search'])->name('site.search');
@@ -73,6 +75,10 @@ Route::get('/admin/login', function () {
 })->name('admin.login');
 Route::post('/login', [AdminController::class, 'login'])->name('login');
 Route::get('/logout', [AdminController::class, 'logout'])->name('logout');
+
+Route::get('/admin/bookings/ticket/{id}', [AdminBookingController::class, 'ticketDownload'])
+    ->name('admin.bookings.ticket');
+
 
 Route::group(['middleware' => ['auth', 'usersession']], function () {
 
@@ -173,8 +179,6 @@ Route::group(['middleware' => ['auth', 'usersession']], function () {
     Route::post('/admin/bookings/{id}', [AdminBookingController::class, 'update'])->name('admin.bookings.update');
     Route::get('/admin/bookings/export', [AdminBookingController::class, 'export'])
         ->name('admin.bookings.export');
-    Route::get('/admin/bookings/ticket/{id}', [AdminBookingController::class, 'ticketDownload'])
-        ->name('admin.bookings.ticket');
 
     // Route::get('admin/bookings/create', [AdminBookingController::class, 'create'])->name('admin.bookings.create');
     // Route::post('admin/bookings/store', [AdminBookingController::class, 'store'])->name('admin.bookings.store');

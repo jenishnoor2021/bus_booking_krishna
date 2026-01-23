@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Booking;
 use App\Models\Bus;
 use Exception;
 use Validator;
@@ -151,6 +152,42 @@ class AdminController extends Controller
         Contact::create($input);
 
         return redirect()->back()->with("success", "Contact request sent successfully!");
+    }
+
+    public function bookingInfo()
+    {
+        $bookings = [];
+        return view('front.booking_info', compact('bookings'));
+    }
+
+    public function bookingInfoFind(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'contact' => 'required',
+            'booking_date' => 'required',
+        ]);
+
+        // Honeypot check
+        if (!empty($request->website)) {
+            return back()->withErrors(['error' => 'Bot detected'])->withInput();
+        }
+
+        if ($validator->fails()) {
+            return Redirect::back()->withInput($request->all())->withErrors($validator);
+        }
+
+        $bookings = Booking::with(['schedule.bus', 'schedule.route'])
+            ->where('customer_phone', $request->contact)
+            ->whereHas('schedule', function ($q) use ($request) {
+                $q->where('travel_date', $request->booking_date);
+            })
+            ->get();
+
+        if ($bookings->isEmpty()) {
+            return back()->withErrors(['error' => 'No booking found for this information'])->withInput();
+        }
+
+        return view('front.booking_info', compact('bookings'))->with('success', 'Booking details found successfully!');
     }
 
     /**

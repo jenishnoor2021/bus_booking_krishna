@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="text-center">
-  <h1 class="text-danger">404 Forbidden</h1>
-  <p>Profile not found.</p>
+  <h1 class="text-danger">404</h1>
+  <p>Page not found.</p>
 </div>
 @endsection

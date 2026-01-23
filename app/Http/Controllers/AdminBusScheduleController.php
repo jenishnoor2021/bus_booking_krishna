@@ -10,6 +10,7 @@ use App\Models\Locations;
 use App\Models\BusSchedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\DB;
 
 class AdminBusScheduleController extends Controller
 {
@@ -45,59 +46,73 @@ class AdminBusScheduleController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'bus_id' => 'required|exists:buses,id',
-            'bus_route_id' => 'required|exists:bus_routes,id',
-            // 'travel_date' => 'required|date',
+
+            'schedule_type' => 'required|in:single,range',
+
+            'travel_date' => 'required_if:schedule_type,single|nullable|date',
+
+            'start_date'  => 'required_if:schedule_type,range|nullable|date',
+            'end_date'    => 'required_if:schedule_type,range|nullable|date|after_or_equal:start_date',
+            'interval_days' => 'required_if:schedule_type,range|nullable|integer|min:1',
+
+            'trips' => 'required|array|min:1',
+            'trips.*.route_id' => 'required|exists:bus_routes,id',
+            'trips.*.time' => 'required',
+
             'available_seats' => 'required|integer|min:1',
         ]);
 
-        if ($request->trip_type === 'single') {
-            // Simple single-day schedule
-            $request->validate(['travel_date' => 'required|date']);
-
-            BusSchedule::create([
-                'bus_id' => $request->bus_id,
-                'bus_route_id' => $request->bus_route_id,
-                'travel_date' => $request->travel_date,
-                'available_seats' => $request->available_seats,
-            ]);
-
-            return redirect()->route('admin.bus_schedules.index')->with('success', 'Single trip schedule added successfully!');
+        if ($request->schedule_type === 'single') {
+            $start = Carbon::parse($request->travel_date);
+            $end = $start;
+            $interval = 1;
+        } else {
+            $start = Carbon::parse($request->start_date);
+            $end = Carbon::parse($request->end_date);
+            $interval = (int) $request->interval_days;
         }
 
-        // Multiple trip logic
-        $request->validate([
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'generate_pattern' => 'required|integer|min:1',
-        ]);
+        DB::beginTransaction();
 
-        $start = Carbon::parse($request->start_date);
-        $end = Carbon::parse($request->end_date);
-        $interval = $request->generate_pattern; // 1=every day, 2=alternate, etc.
+        try {
 
-        $created = 0;
+            for ($date = $start->copy(); $date->lte($end); $date->addDays($interval)) {
 
-        for ($date = $start->copy(); $date->lte($end); $date->addDays($interval)) {
-            $exists = BusSchedule::where('bus_id', $request->bus_id)
-                ->where('travel_date', $date->toDateString())
-                ->exists();
+                foreach ($request->trips as $trip) {
 
-            if (! $exists) {
-                BusSchedule::create([
-                    'bus_id' => $request->bus_id,
-                    'bus_route_id' => $request->bus_route_id,
-                    'travel_date' => $date->toDateString(),
-                    'available_seats' => $request->available_seats,
-                ]);
-                $created++;
-            } else {
-                return  redirect('/admin/bus_schedules')->with('error', "Invalid data");
+                    $alreadyExists = BusSchedule::where([
+                        'bus_id' => $request->bus_id,
+                        'bus_route_id' => $trip['route_id'],
+                        'travel_date' => $date->toDateString(),
+                        'travel_time' => $trip['time'],
+                    ])->exists();
+
+                    if ($alreadyExists) {
+                        continue; // skip duplicates
+                    }
+
+                    BusSchedule::create([
+                        'bus_id' => $request->bus_id,
+                        'bus_route_id' => $trip['route_id'],
+                        'travel_date' => $date->toDateString(),
+                        'travel_time' => $trip['time'],
+                        'available_seats' => $request->available_seats,
+                    ]);
+                }
             }
-        }
 
-        return  redirect('/admin/bus_schedules')->with('success', "Add Record Successfully");
+            DB::commit();
+
+            return redirect()
+                ->route('admin.bus_schedules.index')
+                ->with('success', 'Schedules generated successfully!');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back()->with('error', 'Failed to generate schedules');
+        }
     }
 
     public function edit($id)
@@ -115,11 +130,32 @@ class AdminBusScheduleController extends Controller
             'bus_id' => 'required|exists:buses,id',
             'bus_route_id' => 'required|exists:bus_routes,id',
             'travel_date' => 'required|date',
+            'travel_time' => 'required',
             'available_seats' => 'required|integer|min:1',
         ]);
 
         $schedule = BusSchedule::findOrFail($id);
-        $schedule->update($request->all());
+
+        $exists = BusSchedule::where('id', '!=', $id)
+            ->where('bus_id', $request->bus_id)
+            ->where('bus_route_id', $request->bus_route_id)
+            ->where('travel_date', $request->travel_date)
+            ->where('travel_time', $request->travel_time)
+            ->exists();
+
+        if ($exists) {
+            return back()
+                ->withInput()
+                ->with('error', 'Same bus, route, date and time already exists.');
+        }
+
+        $schedule->update([
+            'bus_id' => $request->bus_id,
+            'bus_route_id' => $request->bus_route_id,
+            'travel_date' => $request->travel_date,
+            'travel_time' => $request->travel_time,
+            'available_seats' => $request->available_seats,
+        ]);
 
         return  redirect('/admin/bus_schedules')->with('success', "Update Record Successfully");
     }
