@@ -100,7 +100,6 @@
                                         class="fa fa-trash"></i></a>
                                 @endif
                             </td>
-                            <td>{{ $user->branches->name }}</td>
                             <td>{{ $user->role }}</td>
                             <td>{{ $user->username }}</td>
                             <td>{{ $user->mobile }}</td>

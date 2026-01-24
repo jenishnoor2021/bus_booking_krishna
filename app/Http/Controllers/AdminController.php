@@ -314,7 +314,10 @@ class AdminController extends Controller
         $user->update($input);
 
         Session::flash('message', "Record updated Successfully");
-        return redirect('admin/users');
+        if (Session::get('user')->role == 'Admin') {
+            return redirect('admin/users');
+        }
+        return redirect('admin/dashboard');
         // return redirect('admin/posts/edit/' . $id);
     }
 

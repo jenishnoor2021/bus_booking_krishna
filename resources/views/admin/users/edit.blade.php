@@ -124,7 +124,9 @@
                     <div class="d-flex gap-2">
                         <input type="submit" class="btn btn-primary w-md" id="submitBtn" value="Submit" />
                         <span id="loadingText" style="display:none; margin-left:10px;"><i class="fa fa-spinner fa-spin" style="font-size:24px"></i></span>
+                        @if(Session::get('user')['role'] == 'Admin')
                         <a class="btn btn-light mt-3 mt-lg-0" href="{{ URL::to('/admin/users') }}">Back</a>
+                        @endif
                     </div>
                 </div>
                 </form>
