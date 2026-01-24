@@ -37,8 +37,10 @@
                         <span id="menu-navi"
                             class="d-sm-flex flex-wrap text-center text-sm-start justify-content-sm-between">
                             <div class="d-flex align-items-center gap-2 flex-wrap mb-3">
+                                @if(Session::get('user')['role'] == 'Admin')
                                 <a class="btn btn-info waves-effect waves-light"
                                     href="{{ route('admin.bus_schedules.create') }}"><i class="fa fa-plus editable" style="font-size:15px;">&nbsp;ADD</i></a>
+                                @endif
                                 <!-- <a href="{{ route('admin.generateSchedules') }}"
                                     class="btn btn-primary"
                                     onclick="return confirm('Generate next 15 days schedules for all active buses?')">

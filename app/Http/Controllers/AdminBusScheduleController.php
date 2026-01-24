@@ -11,6 +11,7 @@ use App\Models\BusSchedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class AdminBusScheduleController extends Controller
 {
@@ -238,12 +239,21 @@ class AdminBusScheduleController extends Controller
 
         Booking::create([
             'bus_schedule_id' => $id,
-            'customer_name' => $data['customer_name'] ?? 'Reserved',
+            'customer_name' => $data['customer_name'] ?? 'customer',
             'customer_phone' => $data['customer_phone'] ?? '',
+            'customer_email' => $data['customer_email'] ?? null,
             'seat_numbers' => json_decode($data['seat_numbers'], true),
-            'total_amount' => 0,
+            'total_amount' => $data['total_amount'],
+            'alternate_phone' => $data['alternate_phone'] ?? null,
+            'pick_location' => $data['pick_location'],
+            'drop_location' => $data['drop_location'],
+            'pin_code' => $data['pin_code'],
+            'state' => $data['state'],
+            'city' => $data['city'],
+            'address' => $data['address'],
+            'age' => $data['age'],
             'status' => 'confirmed',
-            'booked_by' => 'admin',
+            'booked_by' => Session::get('user')->role,
         ]);
 
         return redirect()->route('admin.bus_schedules.index')->with('success', 'Seats successfully booked.');

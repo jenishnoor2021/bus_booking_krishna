@@ -198,6 +198,7 @@ class FrontSideController extends Controller
                 'address' => $data['address'],
                 'age' => $data['age'],
                 'status' => 'pending',
+                'booked_by' => 'customer',
             ]);
 
             // Reduce available seats

@@ -13,6 +13,7 @@
                 </a>
             </li>
 
+            @if(Session::get('user')['role'] == 'Admin')
             <li>
                 <a href="/admin/slider" class="waves-effect">
                     <i class="bx bx-home-circle"></i>
@@ -68,7 +69,7 @@
                     <span key="t-chat">Regular Routes</span>
                 </a>
             </li>
-
+            @endif
             <li>
                 <a href="/admin/bus_schedules" class="waves-effect">
                     <i class="bx bx-home-circle"></i>
@@ -83,6 +84,7 @@
                 </a>
             </li>
 
+            @if(Session::get('user')['role'] == 'Admin')
             <li>
                 <a href="/admin/contact" class="waves-effect">
                     <i class="bx bx-home-circle"></i>
@@ -96,6 +98,7 @@
                     <span key="t-chat">Company</span>
                 </a>
             </li> -->
+            @endif
 
         </ul>
     </div>

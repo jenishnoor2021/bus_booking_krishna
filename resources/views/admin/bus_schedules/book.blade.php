@@ -208,6 +208,7 @@
   <form method="POST" action="{{ route('admin.bus_schedules.book.store', $schedule->id) }}" id="adminBookingForm">
     @csrf
     <input type="hidden" name="seat_numbers" id="seat_numbers">
+    <input type="hidden" name="total_amount" id="total_amount">
 
     <div class="booking-container">
       <!-- Left Form -->
@@ -216,11 +217,11 @@
           <h3>Passenger Details</h3>
           <div class="grid-4">
             <div>
-              <label>S.No</label>
+              <label>Seat No</label>
               <input type="text" id="seatNo" class="form-control" placeholder="select seat" readonly>
             </div>
             <div>
-              <label>Title</label>
+              <label>Gender</label>
               <select name="title" class="form-control" required>
                 <option value="Mr">Mr</option>
                 <option value="Ms">Ms</option>
@@ -343,6 +344,7 @@
 
 @section('script')
 <script>
+  const price = <?= $schedule->route->price ?? 500 ?>;
   const seats = document.querySelectorAll('.seat:not(.booked)');
   const selectedSeats = [];
   seats.forEach(seat => {
@@ -356,6 +358,7 @@
 
       document.getElementById('seat_numbers').value = JSON.stringify(selectedSeats);
       document.getElementById('seatNo').value = selectedSeats.join(', ');
+      document.getElementById('total_amount').value = price;
     });
   });
 </script>

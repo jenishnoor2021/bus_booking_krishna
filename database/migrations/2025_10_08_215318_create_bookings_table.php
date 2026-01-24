@@ -30,7 +30,7 @@ class CreateBookingsTable extends Migration
             $table->json('seat_numbers'); // ["L1A", "L1B"]
             $table->decimal('total_amount', 10, 2)->default(0);
             $table->enum('status', ['pending', 'confirmed', 'cancelled'])->default('confirmed');
-            $table->enum('booked_by', ['user', 'admin'])->default('user');
+            $table->enum('booked_by', ['user', 'admin', 'customer'])->default('user');
             $table->string('razorpay_order_id')->nullable();
             $table->string('razorpay_payment_id')->nullable();
             $table->enum('payment_status', ['pending', 'paid', 'failed'])->default('pending');
