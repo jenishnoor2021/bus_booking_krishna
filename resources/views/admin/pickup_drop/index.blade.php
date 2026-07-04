@@ -4,7 +4,7 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0 font-size-18">Pickup Drop Locations</h4>
+            <h4 class="mb-sm-0 font-size-18">Main City</h4>
         </div>
     </div>
 </div>
@@ -15,7 +15,7 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title mb-4">
-                    Add Pickup Drop Locations
+                    Add Main City
                 </h4>
 
                 @if ($errors->any())
@@ -63,7 +63,7 @@
     <div class="col-md-8">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title mb-4">Pickup Drop Locations List</h4>
+                <h4 class="card-title mb-4">Main City List</h4>
 
                 @if (session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">

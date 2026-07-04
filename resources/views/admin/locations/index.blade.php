@@ -78,7 +78,7 @@
     <div class="col-md-8">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title mb-4">Pickup Drop Locations List</h4>
+                <h4 class="card-title mb-4">Locations List</h4>
 
                 @if (session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
